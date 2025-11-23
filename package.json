@@ -1,0 +1,12 @@
+{
+  "name": "monorepo-backend",
+  "version": "1.0.0",
+  "author": "Nycolas Felipe",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5"
+  }
+}

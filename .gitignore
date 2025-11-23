@@ -1,0 +1,81 @@
+# Dependências do Node.js
+node_modules/
+**/node_modules/
+
+# Arquivos compilados
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Arquivos JavaScript e Map (se não estiverem em um diretório de saída dedicado)
+*.js
+*.js.map
+*.d.ts.map
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Cache de dependências
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnpm-store/
+
+# Ambiente e variáveis
+.env
+.env.*
+!.env.example
+
+# Diretórios de IDE/Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testes e cobertura
+coverage/
+.nyc_output/
+
+# Arquivos de lock (escolha um - npm ou yarn)
+# package-lock.json
+# yarn.lock
+
+# Arquivos temporários
+tmp/
+temp/
+*.tmp
+
+# Arquivos de configuração local
+*.local.*
+
+# TypeScript
+tsconfig.tsbuildinfo
+
+# Monitoramento e debug
+*.pid
+*.seed
+*.pid.lock
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
