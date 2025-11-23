@@ -1,0 +1,371 @@
+Enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+Table users {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  username varchar [not null]
+  email varchar [unique, not null]
+  email_verified boolean [default: false]
+  password_hashed varchar [not null]
+  cpf varchar [unique, not null]
+  phone varchar [not null]
+  phone_verified boolean [default: false]
+  birth_date date
+  gender Gender
+  avatar_url text
+  last_login datetime
+  failed_login_attempts integer [default: 0]
+  is_active boolean [default: true]
+}
+
+Table addresses {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  user_id uuid [ref: > users.id, not null]
+  street varchar [not null]
+  number varchar [not null]
+  complement varchar
+  city varchar [not null]
+  state_region varchar [not null]
+  postal_code varchar [not null]
+  country varchar [not null]
+}
+
+Table users_roles {
+  user_id uuid [ref: > users.id, not null]
+  role_id uuid [ref: > roles.id, not null]
+}
+
+Table roles {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  name varchar [not null]
+}
+
+Table permissions {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  code varchar [unique, not null]
+  description varchar
+}
+
+Table roles_permissions {
+  role_id uuid [ref: > roles.id, not null]
+  permission_id uuid [ref: > permissions.id, not null]
+}
+
+Table carts {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  user_id uuid [ref: > users.id, not null]
+}
+
+Table carts_products {
+  cart_id uuid [ref: > carts.id, not null]
+  product_id uuid [ref: > products.id, not null]
+  quantity integer [not null, default: 1]
+}
+
+Table products {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  name varchar [not null]
+  slug varchar [unique, not null]
+  description text
+  html text
+  price decimal(10,2) [not null]
+  stock int [not null, default: 0]
+  active bool [default: true]
+  weight decimal(8,2)
+  dimensions json
+}
+
+Table product_images {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  product_id uuid [ref: > products.id, not null]
+  image_url varchar [not null]
+  alt_text varchar
+  is_primary boolean [default: false]
+  order_index integer [default: 0]
+}
+
+Table favorites {
+  user_id uuid [ref: > users.id, not null]
+  product_id uuid [ref: > products.id, not null]
+}
+
+Table categories {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  name varchar [not null]
+  slug varchar [unique, not null]
+  description text
+  parent_id uuid [ref: > categories.id]
+  active bool [default: true]
+}
+
+Table products_categories {
+  product_id uuid [ref: > products.id, not null]
+  category_id uuid [ref: > categories.id, not null]
+}
+
+Enum CouponType {
+  PERCENT
+  FIXED
+}
+
+Table coupons {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  active bool [not null, default: false]
+  name varchar [not null]
+  description text
+  type CouponType [not null]
+  value decimal(10,2) [not null]
+  uses integer [not null, default: 0]
+  max_uses integer [not null, default: 1]
+  date_start datetime [not null]
+  date_end datetime
+  observation varchar
+}
+
+Table coupons_users {
+  user_id uuid [ref: > users.id, not null]
+  coupon_id uuid [ref: > coupons.id, not null]
+  observation varchar
+}
+
+Table coupons_products {
+  product_id uuid [ref: > products.id, not null]
+  coupon_id uuid [ref: > coupons.id, not null]
+  observation varchar
+}
+
+Table coupons_payment_methods {
+  payment_method_id uuid [ref: > payment_methods.id, not null]
+  coupon_id uuid [ref: > coupons.id, not null]
+  observation varchar
+}
+
+Table coupons_orders {
+  order_id uuid [ref: > orders.id, not null]
+  coupon_id uuid [ref: > coupons.id, not null]
+}
+
+Enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+Table orders {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  user_id uuid [ref: > users.id, not null]
+  billing_address json [not null]
+  billing_info json [not null]
+  subtotal decimal(10,2) [not null]
+  discount_amount decimal(10,2) [default: 0]
+  total_amount decimal(10,2) [not null]
+}
+
+Table orders_products {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  order_id uuid [ref: > orders.id, not null]
+  product_id uuid [ref: > products.id, not null]
+  snapshot_name varchar [not null]
+  snapshot_description text
+  snapshot_price decimal(10,2) [not null]
+  snapshot_slug varchar [not null]
+  snapshot_metadata json
+  quantity integer [not null, default: 1]
+  unit_price decimal(10,2) [not null]
+  total_price decimal(10,2) [not null]
+}
+
+Table orders_status {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  order_id uuid [ref: > orders.id, not null]
+  status OrderStatus [not null]
+  updated_at datetime [not null]
+}
+
+Table payment_methods {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  name varchar [not null]
+  active bool [not null, default: false]
+  max_installments integer [not null, default: 1]
+}
+
+Enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  CANCELED
+  REJECTED
+  CONTINGENCY
+}
+
+Enum InvoiceType {
+  INPUT
+  OUTPUT
+}
+
+Enum IssuanceType {
+  NORMAL
+  CONTINGENCY_FS
+  CONTINGENCY_EPEC
+  CONTINGENCY_DPEC
+  CONTINGENCY_FSDA
+}
+
+Enum RecipientType {
+  PF
+  PJ
+}
+
+Table invoices {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  order_id uuid [ref: > orders.id, not null, unique]
+  
+  invoice_number varchar [not null]
+  invoice_series varchar [not null]
+  access_key varchar [unique]
+  issue_date datetime [not null]
+  invoice_type InvoiceType [not null]
+  status InvoiceStatus [not null, default: 'DRAFT']
+  issuance_type IssuanceType [not null, default: 'NORMAL']
+  
+  emitter_business_name varchar [not null]
+  emitter_trade_name varchar
+  emitter_cnpj varchar [not null]
+  emitter_state_registration varchar [not null]
+  emitter_municipal_registration varchar
+  emitter_phone varchar
+  emitter_email varchar
+  
+  emitter_street varchar [not null]
+  emitter_number varchar [not null]
+  emitter_complement varchar
+  emitter_district varchar [not null]
+  emitter_city varchar [not null]
+  emitter_state varchar [not null]
+  emitter_postal_code varchar [not null]
+  emitter_country varchar [default: 'Brasil']
+  
+  recipient_type RecipientType [not null]
+  recipient_name varchar [not null]
+  recipient_cpf_cnpj varchar [not null]
+  recipient_state_registration varchar
+  recipient_email varchar [not null]
+  recipient_phone varchar [not null]
+  
+  recipient_street varchar [not null]
+  recipient_number varchar [not null]
+  recipient_complement varchar
+  recipient_district varchar [not null]
+  recipient_city varchar [not null]
+  recipient_state varchar [not null]
+  recipient_postal_code varchar [not null]
+  recipient_country varchar [default: 'Brasil']
+  
+  total_amount decimal(10,2) [not null]
+  products_amount decimal(10,2) [not null]
+  discount_amount decimal(10,2) [default: 0]
+  shipping_amount decimal(10,2) [default: 0]
+  insurance_amount decimal(10,2) [default: 0]
+  
+  icms_amount decimal(10,2) [default: 0]
+  pis_amount decimal(10,2) [default: 0]
+  cofins_amount decimal(10,2) [default: 0]
+  ipi_amount decimal(10,2) [default: 0]
+  iss_amount decimal(10,2) [default: 0]
+  
+  carrier_cnpj varchar
+  carrier_name varchar
+  carrier_state_registration varchar
+  vehicle_plate varchar
+  vehicle_state varchar
+  shipping_type integer
+  shipping_tracking_number varchar
+  
+  payment_method varchar [not null]
+  payment_installments integer [default: 1]
+  payment_due_date datetime
+  
+  additional_information text
+  customer_additional_information text
+  
+  xml_content text
+  pdf_url varchar
+  sefaz_protocol varchar
+  sefaz_authorization_date datetime
+  
+  issued_at datetime
+  canceled_at datetime
+  canceled_reason text
+}
+
+Table invoice_items {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  invoice_id uuid [ref: > invoices.id, not null]
+  order_product_id uuid [ref: > orders_products.id, not null]
+  
+  product_code varchar [not null]
+  product_name varchar [not null]
+  product_gtin varchar
+  product_ncm varchar [not null]
+  product_cest varchar
+  product_unit varchar [not null]
+  
+  quantity decimal(10,3) [not null]
+  unit_price decimal(10,2) [not null]
+  total_price decimal(10,2) [not null]
+  
+  icms_origin integer [not null]
+  icms_cst varchar [not null]
+  icms_base_calculation decimal(10,2) [not null]
+  icms_aliquot decimal(5,2) [not null]
+  icms_value decimal(10,2) [not null]
+  
+  pis_cst varchar [not null]
+  pis_base_calculation decimal(10,2)
+  pis_aliquot decimal(5,2)
+  pis_value decimal(10,2)
+  
+  cofins_cst varchar [not null]
+  cofins_base_calculation decimal(10,2)
+  cofins_aliquot decimal(5,2)
+  cofins_value decimal(10,2)
+  
+  ipi_cst varchar
+  ipi_base_calculation decimal(10,2)
+  ipi_aliquot decimal(5,2)
+  ipi_value decimal(10,2)
+  
+  cfop varchar [not null]
+  additional_information text
+}
+
+enum AuditActionType {
+  INSERT
+  UPDATE
+  DELETE
+}
+
+Table audit_logs {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  table_name varchar
+  record_id uuid
+  action AuditActionType
+  old_values json
+  new_values json
+  user_id uuid [ref: > users.id]
+}
+
+Table feedbacks {
+  id uuid [pk, default: `uuid_generate_v4()`]
+  user_id uuid [ref: > users.id, not null]
+  product_id uuid [ref: > products.id, not null]
+  order_id uuid [ref: > orders.id]
+  rating integer [not null]
+  title varchar [not null]
+  comment text
+}
