@@ -2,7 +2,8 @@ services:
   api_gateway:
     container_name: api_gateway
     build: 
-      dockerfile: gateway.dockerfile
+      context: ..
+      dockerfile: ./docker/gateway.dockerfile
     env_file: .env
     ports:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}"

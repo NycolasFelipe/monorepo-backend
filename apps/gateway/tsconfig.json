@@ -41,12 +41,12 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     
-    "baseUrl": "../",
+    "baseUrl": "../../",
     "paths": {
-    "@config/*": ["./_config/*"],
-    "@errors/*": ["./_errors/*"],
-    "@lib/*": ["./_lib/*"],
-    "@middlewares/*": ["./_middlewares/*"],
+    "@config/*": ["shared/config/*"],
+    "@errors/*": ["shared/errors/*"],
+    "@lib/*": ["shared/lib/*"],
+    "@middlewares/*": ["shared/middlewares/*"],
     }
   },
 

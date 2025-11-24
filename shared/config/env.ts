@@ -1,8 +1,8 @@
-import warnMissingEnv from "../_lib/warnMissingEnv";
+import warnMissingEnv from "../lib/warnMissingEnv";
 
 // Carrega as variáveis de ambiente
 import dotenv from "dotenv";
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: "../../.env" });
 
 // Variáveis de ambiente necessárias
 const env = {

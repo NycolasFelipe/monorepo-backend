@@ -21,7 +21,8 @@ services:
 
   database-init:
     build:
-      dockerfile: database.dockerfile
+      context: ..
+      dockerfile: docker/database.dockerfile
     container_name: sequelize_database_init
     env_file: .env
     depends_on:
