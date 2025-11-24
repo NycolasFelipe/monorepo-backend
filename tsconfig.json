@@ -6,6 +6,7 @@
     "target": "ESNext",
     "types": [],
     "lib": ["ESNext","DOM"],
+    "experimentalDecorators": true,
 
     // Other Outputs
     "sourceMap": true,

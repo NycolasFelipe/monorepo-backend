@@ -3,16 +3,13 @@ services:
     container_name: api_gateway
     build: 
       dockerfile: gateway.dockerfile
-    env_file:
-      - ./gateway/.env
-    environment:
-      - PORT=${PORT}
+    env_file: .env
     ports:
-      - "${PORT}:${PORT}"
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${PORT}/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${GATEWAY_PORT}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
